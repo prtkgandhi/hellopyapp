@@ -24,7 +24,7 @@ jobs:
       # Step 3: Build the Docker image
       - name: Build Docker image
         run: |
-          docker build -t myapp .
+          docker build -t mypythonapp .
 
       # Debugging: Print out the JFROG_URL secret to verify it's being expanded
       - name: Print JFROG_URL Secret
@@ -39,10 +39,10 @@ jobs:
       # Step 5: Tag Docker image with Artifactory repository name
       - name: Tag Docker image
         run: |
-          echo "Tagging Docker image with: https://trial2ohwot.jfrog.io/artifactory/docker-repo-docker/myapp:latest"
-          docker tag myapp:latest https://trial2ohwot.jfrog.io/artifactory/docker-repo-docker/myapp:latest
+          echo "Tagging Docker image with: https://trial2ohwot.jfrog.io/artifactory/docker-repo-docker/mypythonapp:latest"
+          docker tag mypythonapp:latest https://trial2ohwot.jfrog.io/artifactory/docker-repo-docker/mypythonapp:latest
 
       # Step 6: Push Docker image to JFrog Artifactory
       - name: Push Docker image to Artifactory
         run: |
-          docker push https://trial2ohwot.jfrog.io/artifactory/docker-repo-docker/myapp:latest
+          docker push https://trial2ohwot.jfrog.io/artifactory/docker-repo-docker/mypythonapp:latest
