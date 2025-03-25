@@ -29,20 +29,20 @@ jobs:
       # Debugging: Print out the JFROG_URL secret to verify it's being expanded
       - name: Print JFROG_URL Secret
         run: |
-          echo "JFROG_URL is: ${{ secrets.JFROG_URL }}"
+          echo "JFROG_URL is: https://trial2ohwot.jfrog.io"
 
       # Step 4: Log in to JFrog Artifactory
       - name: Log in to JFrog Artifactory
         run: |
-          echo ${{ secrets.JFROG_API_KEY }} | docker login ${{ secrets.JFROG_URL }} -u ${{ secrets.JFROG_USERNAME }} --password-stdin
+          echo ${{ secrets.JFROG_API_KEY }} | docker login https://trial2ohwot.jfrog.io -u ${{ secrets.JFROG_USERNAME }} --password-stdin
 
       # Step 5: Tag Docker image with Artifactory repository name
       - name: Tag Docker image
         run: |
-          echo "Tagging Docker image with: ${{ secrets.JFROG_URL }}/artifactory/docker-repo-docker/myapp:latest"
-          docker tag myapp:latest ${{ secrets.JFROG_URL }}/artifactory/docker-repo-docker/myapp:latest
+          echo "Tagging Docker image with: https://trial2ohwot.jfrog.io/artifactory/docker-repo-docker/myapp:latest"
+          docker tag myapp:latest https://trial2ohwot.jfrog.io/artifactory/docker-repo-docker/myapp:latest
 
       # Step 6: Push Docker image to JFrog Artifactory
       - name: Push Docker image to Artifactory
         run: |
-          docker push ${{ secrets.JFROG_URL }}/artifactory/docker-repo-docker/myapp:latest
+          docker push https://trial2ohwot.jfrog.io/artifactory/docker-repo-docker/myapp:latest
