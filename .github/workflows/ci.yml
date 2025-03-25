@@ -13,35 +13,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code
+      # Step 1: Checkout the code from the repository
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Set up Python
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
+      # Step 2: Set up Docker
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
 
-      # Step 3: Install dependencies
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      # Step 4: Build Docker image
+      # Step 3: Build the Docker image
       - name: Build Docker image
-        run: docker build -t myapp .
+        run: |
+          docker build -t myapp .
 
-      # Step 5: Log in to JFrog Artifactory
+      # Step 4: Log in to JFrog Artifactory
       - name: Log in to JFrog Artifactory
         run: |
           echo ${{ secrets.JFROG_API_KEY }} | docker login ${{ secrets.JFROG_URL }} -u ${{ secrets.JFROG_USERNAME }} --password-stdin
 
-      # Step 6: Tag Docker image with Artifactory repo
+      # Step 5: Tag Docker image with Artifactory repository name
       - name: Tag Docker image
-        run: docker tag myapp ${{ secrets.JFROG_URL }}/docker-repo/myapp:latest
+        run: |
+          docker tag myapp:latest ${{ secrets.JFROG_URL }}/artifactory/docker-repo-docker/myapp:latest
 
-      # Step 7: Push Docker image to JFrog Artifactory
+      # Step 6: Push Docker image to JFrog Artifactory
       - name: Push Docker image to Artifactory
-        run: docker push ${{ secrets.JFROG_URL }}/docker-repo/myapp:latest
+        run: |
+          docker push ${{ secrets.JFROG_URL }}/artifactory/docker-repo-docker/myapp:latest
