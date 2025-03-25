@@ -34,10 +34,10 @@ jobs:
       # Step 5: Tag Docker image with Artifactory repository name
       - name: Tag Docker image
         run: |
+          echo "Tagging Docker image with: ${{ secrets.JFROG_URL }}/artifactory/docker-repo-docker/myapp:latest"
           docker tag myapp:latest ${{ secrets.JFROG_URL }}/artifactory/docker-repo-docker/myapp:latest
 
       # Step 6: Push Docker image to JFrog Artifactory
       - name: Push Docker image to Artifactory
         run: |
           docker push ${{ secrets.JFROG_URL }}/artifactory/docker-repo-docker/myapp:latest
-
