@@ -21,20 +21,20 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
 
-      # Step 3: Build the Docker image
-      - name: Build Docker image
-        run: |
-          docker build -t mypythonapp .
-
       # Debugging: Print out the JFROG_URL secret to verify it's being expanded
       - name: Print JFROG_URL Secret
         run: |
           echo "JFROG_URL is: trial2ohwot.jfrog.io"
 
-      # Step 4: Log in to JFrog Artifactory
+      # Step 3: Log in to JFrog Artifactory
       - name: Log in to JFrog Artifactory
         run: |
           echo ${{ secrets.JFROG_API_KEY }} | docker login trial2ohwot.jfrog.io -u ${{ secrets.JFROG_USERNAME }} --password-stdin
+
+      # Step 4: Build the Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t trial2ohwot.jfrog.io/artifactory/docker-repo-docker-local/mypythonapp:latest .
 
       # Step 5: Tag Docker image with Artifactory repository name
       - name: Tag Docker image
