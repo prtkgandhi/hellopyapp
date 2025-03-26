@@ -1,0 +1,58 @@
+name: Deploy to AWS ECS
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployment on push to 'main' branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout the code from the repository
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Set up AWS CLI and authenticate with AWS
+    - name: Set up AWS CLI
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    # Log in to JFrog Artifactory using the username and API key
+    - name: Authenticate to JFrog Artifactory
+      run: |
+        docker login ${{ secrets.JFROG_URL }} -u ${{ secrets.JFROG_USERNAME }} -p ${{ secrets.JFROG_API_KEY }}
+
+    # Pull Docker image from JFrog Artifactory
+    - name: Pull Docker image from JFrog Artifactory
+      run: |
+        docker pull trial2ohwot.jfrog.io/docker-repo-docker-local/mypythonapp:latest
+
+    # Log in to Amazon ECR
+    - name: Log in to AWS ECR
+      run: |
+        aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username kk_labs_user_115017 --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
+    # Tag the Docker image for ECR
+    - name: Tag Docker image for ECR
+      run: |
+        docker tag trial2ohwot.jfrog.io/docker-repo-docker-local/mypythonapp:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+
+    # Push Docker image to AWS ECR
+    - name: Push Docker image to ECR
+      run: |
+        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+
+    # Install ecs-deploy CLI
+    - name: Install ecs-deploy CLI
+      run: |
+        curl -sSL https://github.com/deadtrickster/ecs-deploy/releases/download/v1.0.0/ecs-deploy-linux-x86_64 -o /usr/local/bin/ecs-deploy
+        chmod +x /usr/local/bin/ecs-deploy
+
+    # Deploy the image to ECS
+    - name: Deploy to ECS
+      run: |
+        ecs-deploy --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service ${{ secrets.ECS_SERVICE_NAME }} --image ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
