@@ -40,7 +40,7 @@ jobs:
       - name: Tag Docker image
         run: |
           echo "Tagging Docker image with: trial2ohwot.jfrog.io/docker-repo-docker/mypythonapp:latest"
-          docker tag mypythonapp:latest trial2ohwot.jfrog.io/docker-repo-docker/mypythonapp:latest
+          docker tag mypythonapp trial2ohwot.jfrog.io/docker-repo-docker/mypythonapp:latest
 
       # Step 5: Push Docker image to JFrog Artifactory
       - name: Push Docker image to Artifactory
