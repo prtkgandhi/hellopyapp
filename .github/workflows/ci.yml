@@ -34,13 +34,13 @@ jobs:
       # Step 4: Build the Docker image
       - name: Build Docker image
         run: |
-          docker build -t trial2ohwot.jfrog.io/docker-repo-docker/mypythonapp:latest .
+          docker build -t trial2ohwot.jfrog.io/docker-repo-docker/mypythonapp .
 
       # Step 5: Tag Docker image with Artifactory repository name
       - name: Tag Docker image
         run: |
           echo "Tagging Docker image with: trial2ohwot.jfrog.io/docker-repo-docker/mypythonapp:latest"
-          docker tag mypythonapp trial2ohwot.jfrog.io/docker-repo-docker/mypythonapp:latest
+          docker tag trial2ohwot.jfrog.io/docker-repo-docker/mypythonapp trial2ohwot.jfrog.io/docker-repo-docker/mypythonapp:latest
 
       # Step 5: Push Docker image to JFrog Artifactory
       - name: Push Docker image to Artifactory
